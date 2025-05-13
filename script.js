@@ -363,46 +363,13 @@ function changeChapter(index, autoPlay = false) {
         // 비디오 소스 변경
         const videoSrc = chapters[currentChapterIndex].video;
         if (videoSrc) {
-            // 비디오 엘리먼트 재생성
-            const videoContainer = document.querySelector('.ratio.ratio-16x9');
-            const oldVideo = videoPlayer;
-            const newVideo = document.createElement('video');
+            videoPlayer.src = videoSrc;
+            videoPlayer.load();
             
-            // 기존 비디오의 속성 복사
-            newVideo.id = 'lecture-video';
-            newVideo.className = oldVideo.className;
-            newVideo.controls = true;
-            newVideo.preload = 'auto';
-            
-            // 소스 엘리먼트 생성
-            const source = document.createElement('source');
-            source.src = videoSrc;
-            source.type = 'video/mp4';
-            
-            // 새 비디오에 소스 추가
-            newVideo.appendChild(source);
-            
-            // 이벤트 리스너 복사
-            const savedPlaybackRate = oldVideo.playbackRate;
-            
-            // 이전 비디오를 새 비디오로 교체
-            videoContainer.replaceChild(newVideo, oldVideo);
-            
-            // 전역 참조 업데이트
-            window.videoPlayer = newVideo;
-            
-            // 이벤트 리스너 다시 연결
-            setupVideoEventListeners(newVideo);
-            
-            // 재생 속도 설정
-            newVideo.addEventListener('loadedmetadata', function() {
-                newVideo.playbackRate = savedPlaybackRate;
-                
-                // 자동 재생 옵션이 true이면 재생
-                if (autoPlay) {
-                    newVideo.play();
-                }
-            });
+            // 자동 재생 옵션이 true이면 재생
+            if (autoPlay) {
+                videoPlayer.play();
+            }
         }
     }
     
@@ -787,46 +754,13 @@ function updateUI() {
         // 비디오 소스 설정
         const videoSrc = chapters[currentChapterIndex].video;
         if (videoSrc) {
-            // 비디오 엘리먼트 재생성
-            const videoContainer = document.querySelector('.ratio.ratio-16x9');
-            const oldVideo = videoPlayer;
-            const newVideo = document.createElement('video');
+            videoPlayer.src = videoSrc;
+            videoPlayer.load();
             
-            // 기존 비디오의 속성 복사
-            newVideo.id = 'lecture-video';
-            newVideo.className = oldVideo.className;
-            newVideo.controls = true;
-            newVideo.preload = 'auto';
-            
-            // 소스 엘리먼트 생성
-            const source = document.createElement('source');
-            source.src = videoSrc;
-            source.type = 'video/mp4';
-            
-            // 새 비디오에 소스 추가
-            newVideo.appendChild(source);
-            
-            // 이벤트 리스너 복사
-            const savedPlaybackRate = oldVideo.playbackRate;
-            
-            // 이전 비디오를 새 비디오로 교체
-            videoContainer.replaceChild(newVideo, oldVideo);
-            
-            // 전역 참조 업데이트
-            window.videoPlayer = newVideo;
-            
-            // 이벤트 리스너 다시 연결
-            setupVideoEventListeners(newVideo);
-            
-            // 재생 속도 설정
-            newVideo.addEventListener('loadedmetadata', function() {
-                newVideo.playbackRate = savedPlaybackRate;
-                
-                // 자동 재생 옵션이 true이면 재생
-                if (autoPlay) {
-                    newVideo.play();
-                }
-            });
+            // 자동 재생 옵션이 true이면 재생
+            if (autoPlay) {
+                videoPlayer.play();
+            }
         }
     }
 }
@@ -870,8 +804,61 @@ document.addEventListener('DOMContentLoaded', function() {
         speedValue.textContent = speed.toFixed(2).replace(/\.?0+$/, '');
     }
     
-    // 비디오 이벤트 리스너 설정
-    setupVideoEventListeners(videoPlayer);
+    // 비디오 종료 이벤트 - 자동 이동 대신 메시지 표시
+    videoPlayer.addEventListener('ended', function() {
+        // 현재 챕터를 완료 상태로 표시
+        if (!completedChapters.includes(currentChapterIndex)) {
+            completedChapters.push(currentChapterIndex);
+            chapterItems[currentChapterIndex].classList.add('completed');
+            localStorage.setItem('completedChapters', JSON.stringify(completedChapters));
+        }
+        
+        // 다음 영상이 있는지 확인
+        let hasNextVideo = false;
+        
+        // 요약하기 챕터인 경우는 퀴즈를 건너뛰지 않음
+        if (chapters[currentChapterIndex].title.includes('요약하기')) {
+            for (let i = currentChapterIndex + 1; i < chapters.length; i++) {
+                if (!chapterItems[i].classList.contains('section-title')) {
+                    hasNextVideo = true;
+                    break;
+                }
+            }
+        } else {
+            // 다른 챕터의 경우 기존대로 퀴즈와 소제목 모두 건너뜀
+            for (let i = currentChapterIndex + 1; i < chapters.length; i++) {
+                if (!chapters[i].isQuiz && !chapterItems[i].classList.contains('section-title')) {
+                    hasNextVideo = true;
+                    break;
+                }
+            }
+        }
+        
+        // 다음 영상으로 이동하세요 메시지 표시
+        if (hasNextVideo) {
+            nextVideoMessage.style.display = 'block';
+        }
+    });
+    
+    // 비디오 진행 상태 확인 (완료 표시를 위해)
+    videoPlayer.addEventListener('timeupdate', function() {
+        // 비디오 90% 이상 시청 시 완료 처리
+        if (videoPlayer.currentTime > videoPlayer.duration * 0.9) {
+            if (!completedChapters.includes(currentChapterIndex)) {
+                completedChapters.push(currentChapterIndex);
+                chapterItems[currentChapterIndex].classList.add('completed');
+                localStorage.setItem('completedChapters', JSON.stringify(completedChapters));
+            }
+        }
+    });
+    
+    // 비디오 로드될 때마다 저장된 재생 속도 적용
+    videoPlayer.addEventListener('loadedmetadata', function() {
+        const savedSpeed = localStorage.getItem('playbackSpeed');
+        if (savedSpeed) {
+            videoPlayer.playbackRate = parseFloat(savedSpeed);
+        }
+    });
 });
 
 // 퀴즈 결과 표시 함수
@@ -1030,63 +1017,4 @@ function updatePagePosition() {
     if (resultPagePosition) {
         resultPagePosition.textContent = positionText;
     }
-}
-
-// 비디오 이벤트 리스너 설정 함수
-function setupVideoEventListeners(videoElement) {
-    // 비디오 종료 이벤트 - 자동 이동 대신 메시지 표시
-    videoElement.addEventListener('ended', function() {
-        // 현재 챕터를 완료 상태로 표시
-        if (!completedChapters.includes(currentChapterIndex)) {
-            completedChapters.push(currentChapterIndex);
-            chapterItems[currentChapterIndex].classList.add('completed');
-            localStorage.setItem('completedChapters', JSON.stringify(completedChapters));
-        }
-        
-        // 다음 영상이 있는지 확인
-        let hasNextVideo = false;
-        
-        // 요약하기 챕터인 경우는 퀴즈를 건너뛰지 않음
-        if (chapters[currentChapterIndex].title.includes('요약하기')) {
-            for (let i = currentChapterIndex + 1; i < chapters.length; i++) {
-                if (!chapterItems[i].classList.contains('section-title')) {
-                    hasNextVideo = true;
-                    break;
-                }
-            }
-        } else {
-            // 다른 챕터의 경우 기존대로 퀴즈와 소제목 모두 건너뜀
-            for (let i = currentChapterIndex + 1; i < chapters.length; i++) {
-                if (!chapters[i].isQuiz && !chapterItems[i].classList.contains('section-title')) {
-                    hasNextVideo = true;
-                    break;
-                }
-            }
-        }
-        
-        // 다음 영상으로 이동하세요 메시지 표시
-        if (hasNextVideo) {
-            nextVideoMessage.style.display = 'block';
-        }
-    });
-    
-    // 비디오 진행 상태 확인 (완료 표시를 위해)
-    videoElement.addEventListener('timeupdate', function() {
-        // 비디오 90% 이상 시청 시 완료 처리
-        if (videoElement.currentTime > videoElement.duration * 0.9) {
-            if (!completedChapters.includes(currentChapterIndex)) {
-                completedChapters.push(currentChapterIndex);
-                chapterItems[currentChapterIndex].classList.add('completed');
-                localStorage.setItem('completedChapters', JSON.stringify(completedChapters));
-            }
-        }
-    });
-    
-    // 비디오 로드될 때마다 저장된 재생 속도 적용
-    videoElement.addEventListener('loadedmetadata', function() {
-        const savedSpeed = localStorage.getItem('playbackSpeed');
-        if (savedSpeed) {
-            videoElement.playbackRate = parseFloat(savedSpeed);
-        }
-    });
 } 
