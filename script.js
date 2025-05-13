@@ -250,7 +250,7 @@ const chapters = Array.from(chapterItems).map((item, index) => {
     if (video) {
         return { 
             title, 
-            video: `https://cdn.jsdelivr.net/gh/Tyndale-analyst/lecture_demo/videos/${video}` 
+            video: `https://cdn.jsdelivr.net/gh/Tyndale-analyst/lecture_demo@v1.0.1/videos/${video}` 
         };
     }
     return { title, video: null };
@@ -1014,5 +1014,5 @@ function updatePagePosition() {
 }
 
 function getVideoUrl(chapter) {
-    return `https://cdn.jsdelivr.net/gh/Tyndale-analyst/lecture_demo/videos/Chapter${chapter}.mp4`;
+    return `https://cdn.jsdelivr.net/gh/Tyndale-analyst/lecture_demo@v1.0.1/videos/Chapter${chapter}.mp4`;
 } 
