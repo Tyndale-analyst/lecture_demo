@@ -319,16 +319,16 @@ function restoreUserProgress() {
     updateNavigationButtons();
 }
 
-// 강의 목차 클릭 이벤트 처리 - 자동 재생 없음
+// 강의 목차 클릭 이벤트 처리
 chapterList.addEventListener('click', function(event) {
     if (event.target.tagName === 'LI') {
         const clickedIndex = Array.from(chapterItems).indexOf(event.target);
-        changeChapter(clickedIndex, false); // 목차 클릭 시 자동 재생 안함
+        changeChapter(clickedIndex);
     }
 });
 
 // 챕터 변경 함수
-function changeChapter(index, autoPlay = false) {
+function changeChapter(index) {
     // 이전 활성 챕터 비활성화
     chapterItems[currentChapterIndex].classList.remove('active');
     
@@ -365,11 +365,6 @@ function changeChapter(index, autoPlay = false) {
         if (videoSrc) {
             videoPlayer.src = videoSrc;
             videoPlayer.load();
-            
-            // 자동 재생 옵션이 true이면 재생
-            if (autoPlay) {
-                videoPlayer.play();
-            }
         }
     }
     
@@ -438,7 +433,7 @@ prevQuestionBtn.addEventListener('click', function() {
     }
 });
 
-// 이전 영상 버튼 클릭 이벤트 - 자동 재생 실행
+// 이전 영상 버튼 클릭 이벤트
 prevVideoBtn.addEventListener('click', function() {
     if (currentChapterIndex > 0) {
         // 아웃트로에서 이전 영상을 누를 때 퀴즈로 이동
@@ -456,7 +451,7 @@ prevVideoBtn.addEventListener('click', function() {
             }
             
             if (quizIndex !== -1) {
-                changeChapter(quizIndex, true); // 이전 영상 버튼으로 이동 시 자동 재생
+                changeChapter(quizIndex);
                 return;
             }
         }
@@ -470,12 +465,12 @@ prevVideoBtn.addEventListener('click', function() {
         }
         
         if (prevIndex >= 0) {
-            changeChapter(prevIndex, true); // 이전 영상 버튼으로 이동 시 자동 재생
+            changeChapter(prevIndex);
         }
     }
 });
 
-// 다음 영상 버튼 클릭 이벤트 - 자동 재생 실행
+// 다음 영상 버튼 클릭 이벤트
 nextVideoBtn.addEventListener('click', function() {
     if (currentChapterIndex < chapters.length - 1) {
         // 요약하기 챕터인 경우는 퀴즈를 건너뛰지 않음
@@ -488,7 +483,7 @@ nextVideoBtn.addEventListener('click', function() {
             }
             
             if (nextIndex < chapters.length) {
-                changeChapter(nextIndex, true); // 다음 영상 버튼으로 이동 시 자동 재생
+                changeChapter(nextIndex);
             }
         } else {
             // 다른 챕터의 경우 기존대로 퀴즈와 소제목 모두 건너뜀
@@ -500,7 +495,7 @@ nextVideoBtn.addEventListener('click', function() {
             }
             
             if (nextIndex < chapters.length) {
-                changeChapter(nextIndex, true); // 다음 영상 버튼으로 이동 시 자동 재생
+                changeChapter(nextIndex);
             }
         }
     }
@@ -961,7 +956,7 @@ if (gotoNextVideoBtn) {
         }
         
         if (outroIndex !== -1) {
-            changeChapter(outroIndex, true); // 퀴즈 결과 화면에서 다음 영상으로 이동 시 자동 재생
+            changeChapter(outroIndex);
         } else {
             // 아웃트로가 없으면 일반 다음 영상으로 이동
             let nextIndex = currentChapterIndex + 1;
@@ -972,7 +967,7 @@ if (gotoNextVideoBtn) {
             }
             
             if (nextIndex < chapters.length) {
-                changeChapter(nextIndex, true); // 퀴즈 결과 화면에서 다음 영상으로 이동 시 자동 재생
+                changeChapter(nextIndex);
             }
         }
     });
