@@ -248,9 +248,10 @@ const chapters = Array.from(chapterItems).map((item, index) => {
     // 일반 챕터인 경우
     const video = item.getAttribute('data-video');
     if (video) {
+        const videoName = video.replace('.mp4', '');
         return { 
             title, 
-            video: `https://cdn.jsdelivr.net/gh/Tyndale-analyst/lecture_demo@main/videos/${video}?v=1` 
+            video: `https://cdn.jsdelivr.net/gh/Tyndale-analyst/lecture_demo@main/videos/${videoName}.v1.mp4` 
         };
     }
     return { title, video: null };
@@ -1014,5 +1015,5 @@ function updatePagePosition() {
 }
 
 function getVideoUrl(chapter) {
-    return `https://cdn.jsdelivr.net/gh/Tyndale-analyst/lecture_demo@main/videos/Chapter${chapter}.mp4?v=1`;
+    return `https://cdn.jsdelivr.net/gh/Tyndale-analyst/lecture_demo@main/videos/Chapter${chapter}.v1.mp4`;
 } 
