@@ -250,7 +250,7 @@ const chapters = Array.from(chapterItems).map((item, index) => {
     if (video) {
         return {
             title,
-            video: `videos/${video}`
+            video: `./videos/${video}`
         };
     }
     return { title, video: null };
