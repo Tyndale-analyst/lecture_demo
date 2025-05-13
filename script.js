@@ -250,7 +250,7 @@ const chapters = Array.from(chapterItems).map((item, index) => {
     if (video) {
         return {
             title,
-            video: `https://cdn.jsdelivr.net/gh/Tyndale-analyst/lecture_demo@main/videos/${video}`
+            video: `https://raw.githubusercontent.com/Tyndale-analyst/lecture_demo/main/videos/${video}`
         };
     }
     return { title, video: null };
