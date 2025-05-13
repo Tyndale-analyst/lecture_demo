@@ -246,8 +246,14 @@ const chapters = Array.from(chapterItems).map((item, index) => {
     }
     
     // 일반 챕터인 경우
-    const video = item.getAttribute('data-video') || '';
-    return { title, video };
+    const video = item.getAttribute('data-video');
+    if (video) {
+        return { 
+            title, 
+            video: `https://cdn.jsdelivr.net/gh/Tyndale-analyst/lecture_demo/videos/${video}` 
+        };
+    }
+    return { title, video: null };
 });
 
 // 퀴즈 데이터
@@ -357,7 +363,7 @@ function changeChapter(index, autoPlay = false) {
         // 비디오 소스 변경
         const videoSrc = chapters[currentChapterIndex].video;
         if (videoSrc) {
-            videoPlayer.src = 'videos/' + videoSrc;
+            videoPlayer.src = videoSrc;
             videoPlayer.load();
             
             // 자동 재생 옵션이 true이면 재생
@@ -748,7 +754,7 @@ function updateUI() {
         // 비디오 소스 설정
         const videoSrc = chapters[currentChapterIndex].video;
         if (videoSrc) {
-            videoPlayer.src = 'videos/' + videoSrc;
+            videoPlayer.src = videoSrc;
         }
     }
 }
