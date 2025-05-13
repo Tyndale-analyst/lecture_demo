@@ -248,9 +248,9 @@ const chapters = Array.from(chapterItems).map((item, index) => {
     // 일반 챕터인 경우
     const video = item.getAttribute('data-video');
     if (video) {
-        return { 
-            title, 
-            video: `https://cdn.jsdelivr.net/gh/Tyndale-analyst/lecture_demo@main/videos/${video}?v=1710831600000` 
+        return {
+            title,
+            video: `videos/${video}`
         };
     }
     return { title, video: null };
