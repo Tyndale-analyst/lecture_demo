@@ -757,10 +757,8 @@ function updateUI() {
             videoPlayer.src = videoSrc;
             videoPlayer.load();
             
-            // 자동 재생 옵션이 true이면 재생
-            if (autoPlay) {
-                videoPlayer.play();
-            }
+            // 자동 재생 하지 않음
+            // videoPlayer.play();
         }
     }
 }
