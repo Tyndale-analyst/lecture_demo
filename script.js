@@ -756,9 +756,6 @@ function updateUI() {
         if (videoSrc) {
             videoPlayer.src = videoSrc;
             videoPlayer.load();
-            
-            // 자동 재생 하지 않음
-            // videoPlayer.play();
         }
     }
 }
