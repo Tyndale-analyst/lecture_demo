@@ -19,15 +19,6 @@
 - Bootstrap 5
 - Font Awesome
 
-## 시작하기
-
-1. 저장소를 클론합니다:
-```bash
-git clone [repository-url]
-```
-
-2. 웹 서버를 통해 index.html을 실행합니다.
-
 ## 사용 방법
 
 1. 왼쪽 사이드바에서 원하는 챕터를 선택합니다.
