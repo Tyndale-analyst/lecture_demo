@@ -466,6 +466,10 @@ prevVideoBtn.addEventListener('click', function() {
         
         if (prevIndex >= 0) {
             changeChapter(prevIndex);
+            // 비디오가 있으면 바로 재생
+            if (!chapters[prevIndex].isQuiz && videoPlayer) {
+                videoPlayer.play();
+            }
         }
     }
 });
@@ -484,6 +488,10 @@ nextVideoBtn.addEventListener('click', function() {
             
             if (nextIndex < chapters.length) {
                 changeChapter(nextIndex);
+                // 비디오가 있으면 바로 재생
+                if (!chapters[nextIndex].isQuiz && videoPlayer) {
+                    videoPlayer.play();
+                }
             }
         } else {
             // 다른 챕터의 경우 기존대로 퀴즈와 소제목 모두 건너뜀
@@ -496,6 +504,10 @@ nextVideoBtn.addEventListener('click', function() {
             
             if (nextIndex < chapters.length) {
                 changeChapter(nextIndex);
+                // 비디오가 있으면 바로 재생
+                if (!chapters[nextIndex].isQuiz && videoPlayer) {
+                    videoPlayer.play();
+                }
             }
         }
     }
@@ -957,6 +969,10 @@ if (gotoNextVideoBtn) {
         
         if (outroIndex !== -1) {
             changeChapter(outroIndex);
+            // 비디오가 있으면 바로 재생
+            if (videoPlayer) {
+                videoPlayer.play();
+            }
         } else {
             // 아웃트로가 없으면 일반 다음 영상으로 이동
             let nextIndex = currentChapterIndex + 1;
@@ -968,6 +984,10 @@ if (gotoNextVideoBtn) {
             
             if (nextIndex < chapters.length) {
                 changeChapter(nextIndex);
+                // 비디오가 있으면 바로 재생
+                if (videoPlayer) {
+                    videoPlayer.play();
+                }
             }
         }
     });
